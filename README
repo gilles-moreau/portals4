@@ -1,3 +1,23 @@
+FORTH build instructions
+----------------------------------
+We assume that HOME_FOLDER is the path of the portals project
+cd $HOME_FOLDER
+
+./autogen.sh
+
+./configure --enable-zero-ms --with-ev=/home/gesalous/miniconda3/envs/portals/lib --disable-transport-ib
+    explanation:
+    --with-ev=<location of the folder that contains libev
+    --disable-transport-ib, use it when you are a machine that has no infinband card. It will enable support for portals over UDP.
+
+make
+
+PTL_IFACE_NAME=<interface name>make check, to run the tests
+   PTL_IFACE_NAME is the name of interface in the pc. It can be lo for loopback or the actual adapter name.
+
+ 
+We have tested it with gcc-13.2.0 and autoreconf 2.71 and 2.72. If you want to use the specific version of gcc and autoreconf tools, we advise to use a virtual environment tool such as conda.
+
 Portals 4 Reference Implementation
 ----------------------------------
 
