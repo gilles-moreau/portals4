@@ -6,6 +6,7 @@
 
 #include "ptl_loc.h"
 
+void ct_check(ct_t *ct);
 /**
  * @brief Initialize a new LE once when created.
  *
