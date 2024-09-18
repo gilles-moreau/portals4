@@ -24,7 +24,7 @@ struct ptl_abort_state {
     int abort_count;
 };
 
-struct ptl_abort_state abort_state;
+extern struct ptl_abort_state abort_state;
 
 static inline int check_abort_state(void) {
     int ret;

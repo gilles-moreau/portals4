@@ -11,7 +11,7 @@
 #include "demux.h"
 #include "hydra.h"
 
-struct HYD_pmcd_pmip HYD_pmcd_pmip;
+extern struct HYD_pmcd_pmip HYD_pmcd_pmip;
 
 void HYD_pmcd_pmip_kill_localprocs(void)
 {

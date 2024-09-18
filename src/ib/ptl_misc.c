@@ -15,6 +15,8 @@ int ptl_disable_ummu;
 unsigned long pagesize;
 unsigned int linesize;
 
+struct ptl_abort_state abort_state;
+
 #if !IS_LIGHT_LIB
 struct transports transports;
 #endif

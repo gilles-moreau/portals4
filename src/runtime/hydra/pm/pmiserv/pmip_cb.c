@@ -12,7 +12,7 @@
 #include "topo.h"
 #include "hydt_ftb.h"
 
-struct HYD_pmcd_pmip HYD_pmcd_pmip;
+extern struct HYD_pmcd_pmip HYD_pmcd_pmip;
 struct HYD_pmcd_pmip_pmi_handle *HYD_pmcd_pmip_pmi_handle = { 0 };
 
 static int storage_len = 0;
