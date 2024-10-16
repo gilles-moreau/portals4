@@ -19,7 +19,7 @@ gbl_t per_proc_gbl;
 /* Event loop. */
 struct evl evl;
 
-#if !WITH_TRANSPORT_UDP
+#if WITH_TRANSPORT_UDP
 static void stop_event_loop_func(EV_P_ ev_async *w, int revents)
 {
     ev_break(evl.loop, EVBREAK_ALL);
@@ -38,7 +38,7 @@ void gbl_release(ref_t *ref)
 
     /* Terminate the event loop, which will terminate the event
      * thread. */
-#if !WITH_TRANSPORT_UDP
+#if WITH_TRANSPORT_UDP
     if (gbl->event_thread_run) {
         /* Create an async event to stop the event loop. May be there
          * is a better way. */
