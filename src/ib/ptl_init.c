@@ -423,7 +423,9 @@ static int wait_conn(buf_t *buf)
         }
         else{
 #endif
-            pthread_cond_wait(&conn->move_wait, &conn->mutex);
+            while (atomic_read(&conn->udp.is_waiting) > 1) {
+                pthread_cond_wait(&conn->move_wait, &conn->mutex);
+            }
 #if WITH_TRANSPORT_UDP
         }
 #endif
