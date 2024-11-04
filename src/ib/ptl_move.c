@@ -156,6 +156,16 @@ int _PtlPut(PPEGBL ptl_handle_md_t md_handle, ptl_size_t local_offset,
   err0:
     return err;
 }
+int _PtlPutNB(PPEGBL ptl_handle_md_t md_handle, ptl_size_t local_offset,
+            ptl_size_t length, ptl_ack_req_t ack_req, ptl_process_t target_id,
+            ptl_pt_index_t pt_index, ptl_match_bits_t match_bits,
+            ptl_size_t remote_offset, void *user_ptr, ptl_hdr_data_t hdr_data)
+{
+return _PtlPut(md_handle, local_offset,
+            length, ack_req, target_id,
+            pt_index, match_bits,
+            remote_offset, user_ptr, hdr_data);
+}
 
 /**
  * @brief Perform a triggered put operation.
@@ -339,6 +349,16 @@ int _PtlGet(PPEGBL ptl_handle_md_t md_handle, ptl_size_t local_offset,
     gbl_put();
   err0:
     return err;
+}
+int _PtlGetNB(PPEGBL ptl_handle_md_t md_handle, ptl_size_t local_offset,
+            ptl_size_t length, ptl_process_t target_id,
+            ptl_pt_index_t pt_index, ptl_match_bits_t match_bits,
+            ptl_size_t remote_offset, void *user_ptr)
+{
+    return _PtlGet(md_handle, local_offset,
+            length, target_id,
+            pt_index, match_bits,
+            remote_offset, user_ptr);
 }
 
 /**
@@ -584,6 +604,20 @@ int _PtlAtomic(PPEGBL ptl_handle_md_t md_handle, ptl_size_t local_offset,
   err0:
     return err;
 }
+int _PtlAtomicNB(PPEGBL ptl_handle_md_t md_handle, ptl_size_t local_offset,
+               ptl_size_t length, ptl_ack_req_t ack_req,
+               ptl_process_t target_id, ptl_pt_index_t pt_index,
+               ptl_match_bits_t match_bits, ptl_size_t remote_offset,
+               void *user_ptr, ptl_hdr_data_t hdr_data, ptl_op_t atom_op,
+               ptl_datatype_t atom_type)
+{
+    return _PtlAtomic(md_handle, local_offset,
+               length, ack_req,
+               target_id, pt_index,
+               match_bits, remote_offset,
+               user_ptr, hdr_data, atom_op,
+               atom_type);
+}
 
 /**
  * @brief Perform a triggered atomic operation.
@@ -788,6 +822,24 @@ int _PtlFetchAtomic(PPEGBL ptl_handle_md_t get_md_handle,
     gbl_put();
   err0:
     return err;
+}
+int _PtlFetchAtomicNB(PPEGBL ptl_handle_md_t get_md_handle,
+                    ptl_size_t local_get_offset,
+                    ptl_handle_md_t put_md_handle,
+                    ptl_size_t local_put_offset, ptl_size_t length,
+                    ptl_process_t target_id, ptl_pt_index_t pt_index,
+                    ptl_match_bits_t match_bits, ptl_size_t remote_offset,
+                    void *user_ptr, ptl_hdr_data_t hdr_data, ptl_op_t atom_op,
+                    ptl_datatype_t atom_type)
+{
+    return _PtlFetchAtomic(get_md_handle,
+                    local_get_offset,
+                    put_md_handle,
+                    local_put_offset, length,
+                    target_id, pt_index,
+                    match_bits, remote_offset,
+                    user_ptr, hdr_data, atom_op,
+                    atom_type);
 }
 
 /**
@@ -1095,6 +1147,22 @@ int _PtlSwap(PPEGBL ptl_handle_md_t get_md_handle,
     gbl_put();
   err0:
     return err;
+}
+int _PtlSwapNB(PPEGBL ptl_handle_md_t get_md_handle,
+             ptl_size_t local_get_offset, ptl_handle_md_t put_md_handle,
+             ptl_size_t local_put_offset, ptl_size_t length,
+             ptl_process_t target_id, ptl_pt_index_t pt_index,
+             ptl_match_bits_t match_bits, ptl_size_t remote_offset,
+             void *user_ptr, ptl_hdr_data_t hdr_data, const void *operand,
+             ptl_op_t atom_op, ptl_datatype_t atom_type)
+{
+    return _PtlSwap(get_md_handle,
+             local_get_offset, put_md_handle,
+             local_put_offset, length,
+             target_id, pt_index,
+             match_bits, remote_offset,
+             user_ptr, hdr_data, operand,
+             atom_op, atom_type);
 }
 
 /**

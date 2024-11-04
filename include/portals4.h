@@ -29,15 +29,17 @@ enum ptl_retvals {
     PTL_IN_USE,          /*!< The specified resource is currently in use. */
     PTL_LIST_TOO_LONG,   /*!< The resulting list is too long (interface-dependent). */
     PTL_NO_INIT,         /*!< Init has not yet completed successfully. */
+    PTL_SIZE_INVALID,    /*!< map size is different from the map_size that was previously used to initialize the interface. */
     PTL_NO_SPACE,        /*!< Sufficient memory for action was not available. */
     PTL_PID_IN_USE,      /*!< PID is in use. */
     PTL_PT_FULL,         /*!< Portal table has no empty entries. */
     PTL_PT_EQ_NEEDED,    /*!< Flow control is enabled and there is no EQ provided. */
-    PTL_PT_IN_USE,        /*!< Portal table index is busy. */
-    PTL_ABORTED          /*!< wait/poll operation was aborted */
-
+    PTL_TRY_AGAIN,
     /* Deprecated return vals */
-    //PTL_INTERRUPTED,     /*!< Wait/get operation was interrupted. Deprecated as of 4.3. */
+    PTL_INTERRUPTED,     /*!< Wait/get operation was interrupted. Deprecated as of 4.3. */
+    PTL_PT_IN_USE,       /*!< Portal table index is busy. */
+    PTL_ABORTED,         /*!< wait/poll operation was aborted */
+
 };
 #define PTL_STATUS_LAST (PTL_PT_IN_USE + 1)
 
@@ -46,6 +48,7 @@ enum ptl_retvals {
 **************/
 typedef uint64_t ptl_size_t;          /*!< Unsigned 64-bit integral type used for representing sizes. */
 typedef uint32_t ptl_pt_index_t;      /*!< Integral type used for representing portal table indices. */
+typedef ptl_pt_index_t ptl_index_t;      /*!< Integral type used for representing portal table indices. */
 typedef uint64_t ptl_match_bits_t;    /*!< Capable of holding unsigned 64-bit integer values. */
 typedef uint64_t ptl_hdr_data_t;      /*!< 64 bits of out-of-band user data. */
 typedef unsigned int ptl_time_t;      /*!< Time in milliseconds (used for timeout specification). */
@@ -1321,7 +1324,8 @@ enum me_options {
     ME_NO_TRUNCATE,
     ME_MAY_ALIGN,
     ME_LOCAL_INC_UH_RLENGTH,
-    ME_OPTIONS_MASK
+    ME_OPTIONS_MASK,
+    ME_ACK_DISABLE,
 };
 
 /********************************************
@@ -1450,6 +1454,7 @@ enum me_options {
  * PTL_ME_MAY_ALIGN option is ignored.
  * */
 #define PTL_ME_LOCAL_INC_UH_RLENGTH (1 << ME_LOCAL_INC_UH_RLENGTH)
+#define PTL_ME_ACK_DISABLE (1 << ME_ACK_DISABLE)
 
 #define PTL_ME_APPEND_OPTIONS_MASK ((1 << ME_OPTIONS_MASK) - 1)
 
@@ -2095,6 +2100,16 @@ int PtlPut(ptl_handle_md_t  md_handle,
            ptl_size_t       remote_offset,
            void            *user_ptr,
            ptl_hdr_data_t   hdr_data);
+int PtlPutNB(ptl_handle_md_t  md_handle,
+           ptl_size_t       local_offset,
+           ptl_size_t       length,
+           ptl_ack_req_t    ack_req,
+           ptl_process_t    target_id,
+           ptl_pt_index_t   pt_index,
+           ptl_match_bits_t match_bits,
+           ptl_size_t       remote_offset,
+           void            *user_ptr,
+           ptl_hdr_data_t   hdr_data);
 /*!
  * @fn PtlGet(ptl_handle_md_t   md_handle,
  *            ptl_size_t        local_offset,
@@ -2144,6 +2159,14 @@ int PtlPut(ptl_handle_md_t  md_handle,
  * @see PtlPut()
  */
 int PtlGet(ptl_handle_md_t  md_handle,
+           ptl_size_t       local_offset,
+           ptl_size_t       length,
+           ptl_process_t    target_id,
+           ptl_pt_index_t   pt_index,
+           ptl_match_bits_t match_bits,
+           ptl_size_t       remote_offset,
+           void            *user_ptr);
+int PtlGetNB(ptl_handle_md_t  md_handle,
            ptl_size_t       local_offset,
            ptl_size_t       length,
            ptl_process_t    target_id,
@@ -2375,6 +2398,18 @@ int PtlAtomic(ptl_handle_md_t  md_handle,
               ptl_hdr_data_t   hdr_data,
               ptl_op_t         operation,
               ptl_datatype_t   datatype);
+int PtlAtomicNB(ptl_handle_md_t  md_handle,
+              ptl_size_t       local_offset,
+              ptl_size_t       length,
+              ptl_ack_req_t    ack_req,
+              ptl_process_t    target_id,
+              ptl_pt_index_t   pt_index,
+              ptl_match_bits_t match_bits,
+              ptl_size_t       remote_offset,
+              void            *user_ptr,
+              ptl_hdr_data_t   hdr_data,
+              ptl_op_t         operation,
+              ptl_datatype_t   datatype);
 /*!
  * @fn PtlFetchAtomic(ptl_handle_md_t   get_md_handle,
  *                    ptl_size_t        local_get_offset,
@@ -2455,6 +2490,19 @@ int PtlAtomic(ptl_handle_md_t  md_handle,
  *                              is not a valid process identifier.
  */
 int PtlFetchAtomic(ptl_handle_md_t  get_md_handle,
+                   ptl_size_t       local_get_offset,
+                   ptl_handle_md_t  put_md_handle,
+                   ptl_size_t       local_put_offset,
+                   ptl_size_t       length,
+                   ptl_process_t    target_id,
+                   ptl_pt_index_t   pt_index,
+                   ptl_match_bits_t match_bits,
+                   ptl_size_t       remote_offset,
+                   void            *user_ptr,
+                   ptl_hdr_data_t   hdr_data,
+                   ptl_op_t         operation,
+                   ptl_datatype_t   datatype);
+int PtlFetchAtomicNB(ptl_handle_md_t  get_md_handle,
                    ptl_size_t       local_get_offset,
                    ptl_handle_md_t  put_md_handle,
                    ptl_size_t       local_put_offset,
@@ -2554,6 +2602,20 @@ int PtlFetchAtomic(ptl_handle_md_t  get_md_handle,
  *                              is not a valid process identifier.
  */
 int PtlSwap(ptl_handle_md_t  get_md_handle,
+            ptl_size_t       local_get_offset,
+            ptl_handle_md_t  put_md_handle,
+            ptl_size_t       local_put_offset,
+            ptl_size_t       length,
+            ptl_process_t    target_id,
+            ptl_pt_index_t   pt_index,
+            ptl_match_bits_t match_bits,
+            ptl_size_t       remote_offset,
+            void            *user_ptr,
+            ptl_hdr_data_t   hdr_data,
+            const void      *operand,
+            ptl_op_t         operation,
+            ptl_datatype_t   datatype);
+int PtlSwapNB(ptl_handle_md_t  get_md_handle,
             ptl_size_t       local_get_offset,
             ptl_handle_md_t  put_md_handle,
             ptl_size_t       local_put_offset,

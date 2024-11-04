@@ -212,7 +212,7 @@ void _PtlFini(gbl_t *gbl)
     gbl->ref_cnt--;
 
     if (gbl->ref_cnt == 0) {
-        gbl->finalized = 1;
+        //gbl->finalized = 1;
         ref_put(&gbl->ref, gbl_release);    /* matches ref_set */
     }
 

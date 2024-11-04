@@ -624,6 +624,7 @@ int _PtlPTEnable(PPEGBL ptl_handle_ni_t ni_handle, ptl_pt_index_t pt_index);
 #else /* WITH_PPE */
 
 #define _PtlAtomic PtlAtomic
+#define _PtlAtomicNB PtlAtomicNB
 #define _PtlAtomicSync PtlAtomicSync
 #define _PtlCTAlloc PtlCTAlloc
 #define _PtlCTCancelTriggered PtlCTCancelTriggered
@@ -640,7 +641,9 @@ int _PtlPTEnable(PPEGBL ptl_handle_ni_t ni_handle, ptl_pt_index_t pt_index);
 #define _PtlEQWait PtlEQWait
 #define _PtlEndBundle PtlEndBundle
 #define _PtlFetchAtomic PtlFetchAtomic
+#define _PtlFetchAtomicNB PtlFetchAtomicNB
 #define _PtlGet PtlGet
+#define _PtlGetNB PtlGetNB
 #define _PtlGetId PtlGetId
 #define _PtlGetMap PtlGetMap
 #define _PtlGetPhysId PtlGetPhysId
@@ -660,9 +663,11 @@ int _PtlPTEnable(PPEGBL ptl_handle_ni_t ni_handle, ptl_pt_index_t pt_index);
 #define _PtlPTEnable PtlPTEnable
 #define _PtlPTFree PtlPTFree
 #define _PtlPut PtlPut
+#define _PtlPutNB PtlPutNB
 #define _PtlSetMap PtlSetMap
 #define _PtlStartBundle PtlStartBundle
 #define _PtlSwap PtlSwap
+#define _PtlSwapNB PtlSwapNB
 #define _PtlTriggeredAtomic PtlTriggeredAtomic
 #define _PtlTriggeredCTInc PtlTriggeredCTInc
 #define _PtlTriggeredCTInc PtlTriggeredCTInc
