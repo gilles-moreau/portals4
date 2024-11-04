@@ -1195,6 +1195,8 @@ static int init_connect_udp(ni_t *ni, conn_t *conn)
             ptl_info("sending to self\n");
             conn_buf->udp.src_addr = conn->sin;
 
+            asm volatile(""::: "memory");
+
             ni->udp.self_recv_addr = conn_buf;
             ni->udp.self_recv_len = conn_buf->length;
             //since setmap does not have to be run, make sure its valid

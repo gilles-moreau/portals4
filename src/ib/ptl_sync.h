@@ -83,6 +83,8 @@ static inline void SPINLOCK_BODY(void)
 #endif
 }
 
+#define ptl_compiler_fence()       asm volatile(""::: "memory")
+
 /* branch prediction hints for compiler */
 #define unlikely(x)	__builtin_expect((x),0)
 #define likely(x)	__builtin_expect((x),1)
