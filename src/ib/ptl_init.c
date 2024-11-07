@@ -422,11 +422,11 @@ static int wait_conn(buf_t *buf)
                 progress_thread_udp(ni);
         }
         else{
+            while (atomic_read(&conn->udp.is_waiting) > 0) {
 #endif
-            while (atomic_read(&conn->udp.is_waiting) > 1) {
                 pthread_cond_wait(&conn->move_wait, &conn->mutex);
-            }
 #if WITH_TRANSPORT_UDP
+            }
         }
 #endif
 #endif
@@ -437,6 +437,7 @@ static int wait_conn(buf_t *buf)
             return STATE_INIT_SEND_REQ;
 
         WARN();
+        ptl_info("SM: error waiting on %p\n", &conn->move_wait);
         return STATE_INIT_ERROR;
     }
     pthread_mutex_unlock(&conn->mutex);
