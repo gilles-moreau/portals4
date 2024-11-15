@@ -244,8 +244,10 @@ int gbl_init(gbl_t *gbl)
         return err;
 
     err = init_iface_table(gbl);
-    if (err)
+    if (err) {
+        index_fini(gbl);
         return err;
+    }
 
     pthread_mutex_init(&gbl->gbl_mutex, NULL);
     /* for PtlAbort */
